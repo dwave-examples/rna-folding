@@ -1,0 +1,4 @@
+dwave-ocean-sdk >= 4.1.0
+matplotlib >= 3.4.3
+dimod~=0.10.7
+click~=8.0.1
