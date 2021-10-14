@@ -21,24 +21,31 @@ Fig.1 - An RNA sequence with a single stem of length 4.
 </p>
 
 Predicting the existence of stems is important to predicting the properties of the RNA molecule.
-However, prediction is made more complicated by two important factors. 
+However, prediction is complicated by two important factors. 
 
 First, stems are not allowed to overlap. 
 A simple case of overlapping can be illustrated by Figure 1.
-The stem expressed by the pink lines can be denoted with the tuple (2, 5, 12, 15),
-where 2 is the index of the first G,
-5 is the index of the U,
-12 is the index of the A,
-and 15 is the index of the last C in the stem.
-This 4-tuple is mapped to a single variable.
+The stem expressed by the pink lines can be denoted with the tuple (2, 5, 12, 15).
+Here, indexing starts with 0 at the far left C 
+and continues along the sequence represented by the gray edges, 
+ ending with index 16 at the bottom-most C.
+Thus, the indices of the first G and last C in the stem have indices 2 and 15, respectively.
+This bond is represented by the left-most pink edge.
+At the other end of the stem is the bond between the U and A at indices 5 and 12, respectively.
+While there are eight nucleotides in the stem, bonded along pink lines,
+the 4-tuple completely determines the stem.
 However, the smaller stems (2, 4, 13, 15) and (3, 5, 12, 14) also need to be considered,
-even though the optimal solution will not include them in this case.
+even though the optimal solution will not include them in this case. 
+Note that by default, we will only consider stems with length at least 3,
+as smaller stems are likely to forming and sustaining bonds.
 
 Second, the intertwining phenomenon known as a pseudoknot is less energetically favorable.
 In Figure 2, we see an example of such a pseudoknot, 
 where one side of a stem occurs in between the two sides of a different stem.
 The use of a quadratic objective allows us to make pseudoknots less likely to occur in optimal solutions,
 increasing overall accuracy.
+Specifically, we include a quadratic terms for each pair of stems that, if present, form a pseudoknot.
+The positive coefficient on this quadratic term discourages the forming of pseudoknots without explicitly disallowing them.
 
 <p align = "center">
 
@@ -65,15 +72,14 @@ It then saves a plot of the sequence and its bonds as `RNA_plot.png`.
 Several optional parameters are accepted:
 
 - `--path`: specifies the path to an input text file with RNA sequence information. 
-- `--verbose`: if set to default value of 'True',
-the program prints additional information about the model. 
+- `--verbose`: prints additional information about the model when set to 'True' (the default). 
 - `--min-stem`: minimum length necessary for a stem to be considered.
 - `--min-loop`: minimum number of nucleotides that must be present
 in between the two sides of a stem for that stem to be considered. 
 In the literature, this is termed a 'hairpin loop.'
-- `-c`: used in th coefficient, *ck<sub>i</sub>k<sub>j</sub>*, 
+- `-c`: reduces the likelihood of pseudoknots by setting larger values of the coefficient, 
+*ck<sub>i</sub>k<sub>j</sub>*,
 applied to the quadratic pseudoknot terms.
-Larger values make pseudoknots less likely.
 
 As an example, to explicitly call the default values, type:
 ```bash
@@ -85,11 +91,11 @@ python RNA_folding.py --path RNA_text_files/TMGMV_UPD-PK1.txt --verbose True  --
 
 In predicting the stems of an RNA molecule, we build a quadratic model with three contributing factors. 
 
-1. Variables correspond to potential stems, 
-linearly weighted by the negative square of their length, *k*.
+1. Each potential stem is encoded as a variables, 
+linearly weighted by the negative square of the length, *k*.
 
-2. Potential pseudoknots correspond to quadratic terms 
-with weight equal to the product of the two lengths 
+2. Each potential pseudoknot is encoded as a quadratic term, 
+ weighted by to the product of the two lengths 
 times a positive parameter *c*.
 
 3. Overlapping stems are disallowed, which is enforced by a constraint.
@@ -122,7 +128,8 @@ A majority of the code is dedicated to step 1.
 Here, possible bonds are stored in a binary matrix,
 and the matrix is searched for possible stems.
 Possible stems (each corresponding to a decision variable) 
-are stored in a dictionary structure to speed processing.
+are stored in a dictionary structure to avoid comparing all combinations of stems
+when searching for pseudoknots and overlaps.
 
 ## Code Specifics
 
@@ -134,7 +141,8 @@ where each key maps to a list of the associated stems weakly contained within th
 
 No two stems contained in the same maximal key can both be in an optimal solution, 
 so we treat them all as overlapping, regardless of if it is literally the case.
-This particular case of overlapping is enforced through an 'discrete' constraint to improve solver performance.
+This particular case of overlapping is enforced by treating the set of stems contained in a maximal stem
+as a single discrete variable by use of the `add_discrete` method.
 
 We further use the stem dictionary structure 
 to avoid comparing all combinations of stems when searching for pseudoknots and overlaps.
