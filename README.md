@@ -44,7 +44,7 @@ In Figure 2, we see an example of such a pseudoknot,
 where one side of a stem occurs in between the two sides of a different stem.
 The use of a quadratic objective allows us to make pseudoknots less likely to occur in optimal solutions,
 increasing overall accuracy.
-Specifically, we include a quadratic terms for each pair of stems that, if present, form a pseudoknot.
+Specifically, we include a quadratic term for each pair of stems that, if present, form a pseudoknot.
 The positive coefficient on this quadratic term discourages the forming of pseudoknots without explicitly disallowing them.
 
 <p align = "center">
