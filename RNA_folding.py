@@ -17,13 +17,18 @@
 from os.path import dirname, join
 from collections import defaultdict
 from itertools import product, combinations
-import click
 
+import click
 import numpy as np
 import networkx as nx
-import matplotlib.pyplot as plt
 import dimod
 from dwave.system import LeapHybridCQMSampler
+import matplotlib
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    matplotlib.use("agg")
+    import matplotlib.pyplot as plt
 
 
 def text_to_matrix(file_name, min_loop):
@@ -48,7 +53,7 @@ def text_to_matrix(file_name, min_loop):
     index_dict = defaultdict(list)
 
     # Create a dictionary giving list of indices for each nucleotide.
-    for i, nucleotide in enumerate(rna.lower()):
+    for i, nucleotide in enumerate(rna):
         index_dict[nucleotide].append(i)
 
     # List of possible hydrogen bonds for stems.
@@ -218,7 +223,7 @@ def make_plot(file, stems, fig_name='RNA_plot'):
 
 
 def build_cqm(stem_dict, min_stem, c):
-    """ Creates a Constrained Binary Model to optimize most likely stems from a dictionary of possible stems.
+    """ Creates a constrained quadratic model to optimize most likely stems from a dictionary of possible stems.
 
     Args:
         stem_dict (dict):
@@ -374,6 +379,9 @@ def main(path, verbose, min_stem, min_loop, c):
 
     stems = process_cqm_solution(sample_set, verbose)
     make_plot(path, stems)
+
+    if verbose:
+        print('\nPlot of solution saved as RNA_plot.png')
 
 
 if __name__ == "__main__":
