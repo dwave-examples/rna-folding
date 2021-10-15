@@ -91,7 +91,7 @@ python RNA_folding.py --path RNA_text_files/TMGMV_UPD-PK1.txt --verbose True  --
 
 In predicting the stems of an RNA molecule, we build a quadratic model with three contributing factors. 
 
-1. Each potential stem is encoded as a variables, 
+1. Each potential stem is encoded as a variable, 
 linearly weighted by the negative square of the length, *k*.
 
 2. Each potential pseudoknot is encoded as a quadratic term, 
