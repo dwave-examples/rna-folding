@@ -13,10 +13,10 @@ in a manner that  minimizes the free energy of the system.
 
 This demo program takes an RNA sequence and applies a quadratic model in pursuit of the optimal stem configuration.
 
-<p align = "center">
+![Figure 1! ](readme_imgs/Single_Stem.png "Simple single stem plot")
 
-![Figure 1!](readme_imgs/Single_Stem.png "This is a title")
-<p align = "center">
+<p>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
 Fig.1 - An RNA sequence with a single stem of length 4.
 </p>
 
@@ -29,15 +29,14 @@ The stem expressed by the pink lines can be denoted with the tuple (2, 5, 12, 15
 Here, indexing starts with 0 at the far left C 
 and continues along the sequence represented by the gray edges, 
  ending with index 16 at the bottom-most C.
-Thus, the indices of the first G and last C in the stem have indices 2 and 15, respectively.
-This bond is represented by the left-most pink edge.
-At the other end of the stem is the bond between the U and A at indices 5 and 12, respectively.
+The indices of the eight nucleotides in the stem are labeled in the figure.
+The four pink edges illustrate the four bonds that make up the stem.
 While there are eight nucleotides in the stem, bonded along pink lines,
 the 4-tuple completely determines the stem.
 However, the smaller stems (2, 4, 13, 15) and (3, 5, 12, 14) also need to be considered,
 even though the optimal solution will not include them in this case. 
 Note that by default, we will only consider stems with length at least 3,
-as smaller stems are likely to forming and sustaining bonds.
+as smaller stems are unlikely to form and sustain bonds.
 
 Second, the intertwining phenomenon known as a pseudoknot is less energetically favorable.
 In Figure 2, we see an example of such a pseudoknot, 
@@ -49,8 +48,9 @@ The positive coefficient on this quadratic term discourages the forming of pseud
 
 <p align = "center">
 
-![Figure 2](readme_imgs/pseudoknot2.png)
-<p align = "center">
+![Figure 2](readme_imgs/pseudoknot2.png "Simple pseudoknot example")
+<p>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 Fig.2 - A pseudoknot formed by a stem of length 3 and a stem of length 5.
 </p>
 
@@ -100,9 +100,7 @@ times a positive parameter *c*.
 
 3. Overlapping stems are disallowed, which is enforced by a constraint.
 
-![objective](readme_imgs/objective.png) 
-
-Subject to ![constraint](readme_imgs/constraint.png) if stems *i* and *j* overlap.
+![objective](readme_imgs/model.png "The optimization model")
 
 Here, each *x<sub>i</sub>* is a binary variable indicating the inclusion/exclusion of the *i<sup>th</sup>* stem.
 Each constant *k<sub>i</sub>* is the length of said stem.
