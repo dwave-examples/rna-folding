@@ -23,7 +23,6 @@ import numpy as np
 import networkx as nx
 import dimod
 from dwave.system import LeapHybridCQMSampler
-import matplotlib
 try:
     import matplotlib.pyplot as plt
 except ImportError:
