@@ -8,7 +8,7 @@ The sequence of A’s, U’s, G’s, and C’s that make up RNA has
 certain pairs that are drawn together to form hydrogen bonds.
 A sequence of several bonds in a row is called a stem,
 and a stem provides sufficient force to keep the molecule folded together.
-In nature, an RNA molecule will form some stems while avoiding others
+RNA molecules naturally form some stems while avoiding others
 in a manner that  minimizes the free energy of the system. 
 
 This demo program takes an RNA sequence and applies a quadratic model in pursuit of the optimal stem configuration.
@@ -91,14 +91,15 @@ python RNA_folding.py --path RNA_text_files/TMGMV_UPD-PK1.txt --verbose True  --
 
 In predicting the stems of an RNA molecule, we build a quadratic model with three contributing factors. 
 
-1. Each potential stem is encoded as a variable, 
+1. Each potential stem is encoded as a binary variable, 
 linearly weighted by the negative square of the length, *k*.
 
 2. Each potential pseudoknot is encoded as a quadratic term, 
  weighted by to the product of the two lengths 
 times a positive parameter *c*.
 
-3. Overlapping stems are disallowed, which is enforced by a constraint.
+3. Overlapping stems are not allowed. 
+Potential overlaps give rise to constraints in the model.
 
 ![objective](readme_imgs/model.png "The optimization model")
 
@@ -106,9 +107,10 @@ Here, each *x<sub>i</sub>* is a binary variable indicating the inclusion/exclusi
 Each constant *k<sub>i</sub>* is the length of said stem.
 The indexing set *S* is the set of all pairs of stems that form a pseudoknot.
 Finally, *c* is a tunable parameter adjusting the impact of pseudoknots.
-It is set to 0.3 by default.
-
-This formulation is loosely based on [1].
+It is set to 0.3 by default. If *c* = 0, 
+the affect of pseudoknots is ignored, 
+while *c* > 1  eliminates all pseudoknots from optimal solutions.
+This formulation (and default choice of *c*) is loosely based on [1].
 
 In the printed solution, each stem is denoted by four numbers. 
 The first two numbers correspond to the beginning and ending indices of the first side of the stem. 
@@ -152,9 +154,9 @@ even if the solution does not.
 ## References
 
 [1] Fox DM, MacDermaid CM, Schreij AM, Zwierzyna M, Walker RC. 
-RNA folding using quantum computers. 
-bioRxiv; 2021. DOI: 10.1101/2021.05.27.446060.
+"RNA folding using quantum computers," 
+[bioRxiv](https://www.biorxiv.org/content/10.1101/2021.05.27.446060v1).
 
 [2] Kai, Zhang, et al. 
-"An efficient simulated annealing algorithm for the RNA secondary structure prediction with Pseudoknots." 
-BMC genomics 20.13 (2019): 1-13.
+"An efficient simulated annealing algorithm for the RNA secondary structure prediction with Pseudoknots," 
+[BMC Genomics](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-019-6300-2).
