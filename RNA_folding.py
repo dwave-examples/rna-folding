@@ -30,10 +30,14 @@ def text_to_matrix(file_name, min_loop):
     """ Reads properly formatted RNA text file and returns a matrix of possible hydrogen bonding pairs.
 
     Args:
-        file_name: String path to text file.
-        min_loop: Integer minimum number of nucleotides between two bonding nucleotides.
+        file_name (str):
+            Path to text file.
+        min_loop (int):
+            Minimum number of nucleotides separating two sides of a stem.
 
-    Returns: Numpy matrix of 0's and 1's, where 1 represents a possible bonding pair.
+    Returns:
+        :class: `numpy.ndarray`:
+            Numpy matrix of 0's and 1's, where 1 represents a possible bonding pair.
     """
 
     # Requires text file of RNA data written in same format as examples.
@@ -69,11 +73,15 @@ def make_stem_dict(bond_matrix, min_stem, min_loop):
     Recording stems in this manner allows for faster computations.
 
     Args:
-        bond_matrix: Numpy matrix of 0's and 1's, where 1 represents a possible bonding pair.
-        min_stem: Integer minimum number of nucleotides in each side of a stem.
-        min_loop: Integer minimum number of nucleotides between two bonding nucleotides.
+        bond_matrix (:class: `numpy.ndarray`):
+            Numpy matrix of 0's and 1's, where 1 represents a possible bonding pair.
+        min_stem (int):
+            Minimum number of nucleotides in each side of a stem.
+        min_loop (int):
+            Minimum number of nucleotides separating two sides of a stem.
 
-    Returns: Dictionary of all possible stems with maximal stems as keys.
+    Returns:
+        dict: Dictionary of all possible stems with maximal stems as keys.
     """
 
     stem_dict = {}
@@ -107,10 +115,13 @@ def check_overlap(stem1, stem2):
     """ Checks if 2 stems use any of the same nucleotides.
 
     Args:
-        stem1: 4-tuple containing stem information.
-        stem2: 4-tuple containing stem information.
+        stem1 (tuple):
+            4-tuple containing stem information.
+        stem2 (tuple):
+            4-tuple containing stem information.
 
-    Returns: Boolean indicating if the two stems overlap.
+    Returns:
+         bool: Boolean indicating if the two stems overlap.
     """
 
     # Check for string dummy variable used when implementing a discrete variable.
@@ -136,11 +147,15 @@ def pseudoknot_terms(stem_dict, min_stem=3, c=0.3):
     The penalty is the parameter c times the product of the lengths of the two stems in the knot.
 
     Args:
-        stem_dict: Dictionary with maximal stems as keys and list of weakly contained sub-stems as values.
-        min_stem: Integer smallest number of consecutive bonds to be considered a stem.
-        c: Float parameter factor of the penalty on pseudoknots.
+        stem_dict (dict):
+            Dictionary with maximal stems as keys and list of weakly contained sub-stems as values.
+        min_stem (int):
+            Smallest number of consecutive bonds to be considered a stem.
+        c (float):
+            Parameter factor of the penalty on pseudoknots.
 
-    Returns: Dictionary with all possible pseudoknots as keys and appropriate penalty as as value pair.
+    Returns:
+         dict: Dictionary with all possible pseudoknots as keys and appropriate penalty as as value pair.
     """
 
     pseudos = {}
@@ -159,11 +174,12 @@ def make_plot(file, stems, fig_name='RNA_plot'):
     """ Produces graph plot and saves as .png file.
 
     Args:
-        file: String text file name containing RNA information.
-        stems: List of stems in solution, encoded as 4-tuples.
-        fig_name: String name of file created to save figure. ".png" is added automatically
-
-    Returns:None
+        file (str):
+            Path to text file name containing RNA information.
+        stems (list):
+            List of stems in solution, encoded as 4-tuples.
+        fig_name (str):
+            Name of file created to save figure. ".png" is added automatically
     """
 
     # Read RNA file for length and labels.
@@ -205,11 +221,15 @@ def build_cqm(stem_dict, min_stem, c):
     """ Creates a Constrained Binary Model to optimize most likely stems from a dictionary of possible stems.
 
     Args:
-        stem_dict: Dictionary with maximal stems as keys and list of weakly contained sub-stems as values.
-        min_stem: Integer smallest number of consecutive bonds to be considered a stem.
-        c: Float parameter factor of the penalty on pseudoknots.
+        stem_dict (dict):
+            Dictionary with maximal stems as keys and list of weakly contained sub-stems as values.
+        min_stem (int):
+            Smallest number of consecutive bonds to be considered a stem.
+        c (float):
+            Parameter factor of the penalty on pseudoknots.
 
-    Returns: Constrained Binary Model.
+    Returns:
+         :class:`~dimod.ConstrainedQuadraticModel`: Optimization model for RNA folding.
     """
 
     # Create linear coefficients of -k^2, prioritizing inclusion of long stems.
@@ -250,10 +270,13 @@ def process_cqm_solution(sample_set, verbose=True):
     Returns solution as a list of stems rather than a binary string.
 
     Args:
-        sample_set: dimod sampleset element.
-        verbose: Boolean indicating if function should print additional information.
+        sample_set:
+            :class:`~dimod.SampleSet`: Sample set of formed by sampling the RNA folding optimization model.
+        verbose (bool):
+            Boolean indicating if function should print additional information.
 
-    Returns: List of stems included in optimal solution, encoded as 4-tuples.
+    Returns:
+        list: List of stems included in optimal solution, encoded as 4-tuples.
     """
 
     # Filter for feasibility.
@@ -270,17 +293,17 @@ def process_cqm_solution(sample_set, verbose=True):
     # Extract stems with a positive indicator variable.
     bonded_stems = [stem for stem, val in solution.sample.items() if val == 1 and type(stem) == tuple]
 
-    print('\n# stems in best solution:', len(bonded_stems))
+    print('\nNumber of stems in best solution:', len(bonded_stems))
     print('Stems in best solution:', *bonded_stems)
 
     if verbose:
-        print('\n# variables (stems):', len(solution[0].keys()))
+        print('\nNumber of variables (stems):', len(solution[0].keys()))
 
         # Find pseudoknots using product instead of combinations allows for short asymmetric checks.
         pseudoknots = [(stem1, stem2) for [stem1, stem2] in product(bonded_stems, bonded_stems)
                        if stem1[1] < stem2[0] and stem2[1] < stem1[2] and stem1[3] < stem2[2]]
 
-        print('\n# pseudoknots in best solution:', len(pseudoknots))
+        print('\nNumber of pseudoknots in best solution:', len(pseudoknots))
         if pseudoknots:
             print('Pseudoknots:', *pseudoknots)
 
@@ -309,13 +332,19 @@ def main(path, verbose, min_stem, min_loop, c):
     Default parameters are set by click module inputs.
 
     Args:
-        path: Path to problem file with RNA sequence.
-        verbose: Boolean to determine amount of information printed.
-        min_stem: Integer smallest number of consecutive bonds to be considered a stem.
-        min_loop: Integer minimum number of nucleotides separating two sides of a stem.
-        c: Float multiplier for the coefficient of the quadratic terms for pseudoknots.
+        path (str):
+            Path to problem file with RNA sequence.
+        verbose (bool):
+            Boolean to determine amount of information printed.
+        min_stem (int):
+            Smallest number of consecutive bonds to be considered a stem.
+        min_loop (int):
+            Minimum number of nucleotides separating two sides of a stem.
+        c (float):
+            Multiplier for the coefficient of the quadratic terms for pseudoknots.
 
     Returns:
+        None: None
     """
     if verbose:
         print('\nPreprocessing data from:', path)
