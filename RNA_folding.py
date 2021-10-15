@@ -147,7 +147,7 @@ def check_overlap(stem1, stem2):
 
 
 def pseudoknot_terms(stem_dict, min_stem=3, c=0.3):
-    """ Creates a dictionary with all possible pseudoknots as keys and appropriate penalty as as value pair.
+    """ Creates a dictionary with all possible pseudoknots as keys and appropriate penalties as values.
 
     The penalty is the parameter c times the product of the lengths of the two stems in the knot.
 
