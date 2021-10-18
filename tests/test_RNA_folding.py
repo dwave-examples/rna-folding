@@ -33,17 +33,49 @@ class TestSmoke(unittest.TestCase):
 
 
 class TestRNA_folding(unittest.TestCase):
-    def test_num_vars(self):
-        """Test CQM characteristics for demo instance"""
+    def test_read_file_to_stem_dict(self):
+        """Test ability to read file and create appropriate stem dict"""
 
-        file = os.path.join(project_dir, 'RNA_text_files/TMGMV_UPD-PK1.txt')
+        file = os.path.join(project_dir, 'RNA_text_files/simple.txt')
 
         bond_matrix = RNA_folding.text_to_matrix(file, 2)
         stem_dict = RNA_folding.make_stem_dict(bond_matrix, 3, 2)
+
+        self.assertEqual(stem_dict, {(2, 5, 12, 15): [(2, 4, 13, 15), (2, 5, 12, 15), (3, 5, 12, 14)]})
+
+    def test_build_cqm(self):
+        """Test build_CQM creating correct constraints and variables"""
+
+        stem_dict = {
+            (1, 3, 13, 15): [(1, 3, 13, 15)],
+            (6, 10, 20, 24): [(6, 8, 22, 24), (6, 9, 21, 24), (6, 10, 20, 24), (7, 9, 21, 23), (7, 10, 20, 23),
+                              (8, 10, 20, 22)],
+            (7, 9, 14, 16): [(7, 9, 14, 16)],
+            (13, 15, 23, 25): [(13, 15, 23, 25)]
+        }
+
         cqm = RNA_folding.build_cqm(stem_dict, 3, 0.3)
 
-        self.assertEqual(len(cqm.variables), 17)
-        self.assertEqual(len(cqm.constraints), 36)
+        self.assertEqual(cqm.variables,
+                         [(1, 3, 13, 15), (6, 8, 22, 24), (6, 9, 21, 24), (6, 10, 20, 24), (7, 9, 21, 23),
+                          (7, 10, 20, 23),
+                          (8, 10, 20, 22), (7, 9, 14, 16), (13, 15, 23, 25), 'Null:(6, 10, 20, 24)']
+                         )
+        self.assertEqual(cqm.objective.linear,
+                         {(1, 3, 13, 15): -9.0, (6, 8, 22, 24): -9.0, (6, 9, 21, 24): -16.0, (6, 10, 20, 24): -25.0,
+                          (7, 9, 21, 23): -9.0, (7, 10, 20, 23): -16.0, (8, 10, 20, 22): -9.0, (7, 9, 14, 16): -9.0,
+                          (13, 15, 23, 25): -9.0, 'Null:(6, 10, 20, 24)': 0.0}
+                         )
+
+        self.assertEqual(cqm.objective.quadratic,
+                         {((6, 8, 22, 24), (1, 3, 13, 15)): 2.6999999999999997,
+                          ((6, 9, 21, 24), (1, 3, 13, 15)): 3.5999999999999996, ((6, 10, 20, 24), (1, 3, 13, 15)): 4.5,
+                          ((7, 9, 21, 23), (1, 3, 13, 15)): 2.6999999999999997,
+                          ((7, 10, 20, 23), (1, 3, 13, 15)): 3.5999999999999996,
+                          ((8, 10, 20, 22), (1, 3, 13, 15)): 2.6999999999999997}
+                         )
+
+        self.assertEqual(len(cqm.constraints), 15)
 
     def test_small_case(self):
         """Test solution quality of small case."""

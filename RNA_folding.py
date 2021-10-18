@@ -19,6 +19,7 @@ from collections import defaultdict
 from itertools import product, combinations
 
 import click
+import matplotlib
 import numpy as np
 import networkx as nx
 import dimod
