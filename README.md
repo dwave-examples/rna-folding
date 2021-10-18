@@ -128,8 +128,8 @@ A majority of the code is dedicated to step 1.
 Here, possible bonds are stored in a binary matrix,
 and the matrix is searched for possible stems.
 Possible stems (each corresponding to a decision variable) 
-are stored in a dictionary structure to avoid comparing all combinations of stems
-when searching for pseudoknots and overlaps.
+are stored in a dictionary structure that reduces the number of comparisons
+necessary when searching for pseudoknots and overlaps.
 
 ## Code Specifics
 
@@ -150,6 +150,15 @@ to avoid comparing all combinations of stems when searching for pseudoknots and 
 Plotting uses a randomized process to find a reasonable layout. 
 For this reason, the plot will change in successive runs, 
 even if the solution does not. 
+
+Input text files should have a number at the beginning of each line,
+followed by a sequence of A, C, G, U, and T's. 
+The file reader ignores the leading number and is not sensitive to 
+spaces, upper vs. lower case, or line breaks. 
+By convention, spaces are used to separate every 10 letters and the number at the beginning of each line is included to keep track of the location in the sequence.
+For instance, if there are 30 letters on each line,
+then there would be three groups of 10 letters on each line,
+with the leading numbers increasing by 30 each line.
 
 ## References
 
