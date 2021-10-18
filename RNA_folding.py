@@ -220,6 +220,8 @@ def make_plot(file, stems, fig_name='RNA_plot'):
 
     plt.savefig(fig_name + '.png')
 
+    print('\nPlot of solution saved as {}.png'.format(fig_name))
+
 
 def build_cqm(stem_dict, min_stem, c):
     """ Creates a constrained quadratic model to optimize most likely stems from a dictionary of possible stems.
@@ -378,9 +380,6 @@ def main(path, verbose, min_stem, min_loop, c):
 
     stems = process_cqm_solution(sample_set, verbose)
     make_plot(path, stems)
-
-    if verbose:
-        print('\nPlot of solution saved as RNA_plot.png')
 
 
 if __name__ == "__main__":
