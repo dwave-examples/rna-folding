@@ -27,7 +27,3 @@ workflows:
           integration-tests: "skip"
       - dwave/test-win:
           integration-tests: "skip"
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
