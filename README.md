@@ -1,3 +1,7 @@
+[![Linux/Mac/Windows build status](
+  https://circleci.com/gh/dwave-examples/rna-folding.svg?style=svg)](
+  https://circleci.com/gh/dwave-examples/rna-folding)
+
 # RNA Folding
 
 In biology and chemistry,
