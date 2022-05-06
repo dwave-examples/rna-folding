@@ -164,7 +164,7 @@ by 30 each line.
 
 [1] Fox DM, MacDermaid CM, Schreij AM, Zwierzyna M, Walker RC. 
 "RNA folding using quantum computers," 
-[bioRxiv](https://www.biorxiv.org/content/10.1101/2021.05.27.446060v1).
+[PLOS Computational Biology](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010032).
 
 [2] Kai, Zhang, et al. 
 "An efficient simulated annealing algorithm for the RNA secondary structure prediction with Pseudoknots," 
