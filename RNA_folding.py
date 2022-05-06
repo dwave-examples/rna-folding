@@ -325,7 +325,7 @@ DEFAULT_PATH = join(dirname(__file__), 'RNA_text_files', 'TMGMV_UPD-PK1.txt')
                     'LeapHybridCQMSampler.')
 @click.option('--path', type=click.Path(), default=DEFAULT_PATH,
               help=f'Path to problem file.  Default is {DEFAULT_PATH!r}')
-@click.option('--verbose', default=True,
+@click.option('--verbose/--no-verbose', default=True,
               help='Prints additional model information.')
 @click.option('--min-stem', type=click.IntRange(1,), default=3,
               help='Minimum length for a stem to be considered.')
