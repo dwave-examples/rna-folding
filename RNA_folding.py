@@ -256,7 +256,7 @@ def build_cqm(stem_dict, min_stem, c):
         if len(substems) > 1:
             # Add the variable for all zeros case in one-hot constraint
             zeros = 'Null:' + str(stem)
-            cqm.add_variable(zeros, 'BINARY')
+            cqm.add_variable('BINARY', zeros)
             cqm.add_discrete(substems + [zeros], stem)
 
     for stem1, stem2 in combinations(stem_dict.keys(), 2):
